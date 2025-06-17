@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       name:
-        description: 'set name''
+        description: 'set name'
         required: true
         default: 'github-actions'
         type: string

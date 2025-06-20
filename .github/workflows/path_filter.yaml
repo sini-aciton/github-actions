@@ -2,6 +2,7 @@ name: path_filter
 on:
   push:
     paths:
+      - '!.github/workflows/part1/push.yaml'
       - '.github/workflows/part1/*'
 jobs:
   path_filter:

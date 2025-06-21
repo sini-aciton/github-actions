@@ -8,7 +8,7 @@ jobs:
         if: startsWith('github actions', 'git')
         run: echo "git"
       - name: startsswith
-        if: startWith('github actions', 'test')
+        if: startsWith('github actions', 'test')
         run: echo "test"
       - name: endswith
         if: endsWith('github actions', 'ions')

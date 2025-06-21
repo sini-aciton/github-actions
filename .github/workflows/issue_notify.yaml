@@ -11,18 +11,14 @@ jobs:
       - name: checkout
         uses: actions/checkout@v4
       - name: get-keyword
+        id: get-keyword
         run: |
           echo level=Undefined >> $GITHUB_OUTPUT
           
           keywords=$(cat keyword-list.txt)
           for keyword in $keywords; do
-           echo "level=Undefined" >> $GITHUB_OUTPUT
-
-          keywords=$(cat keyword-list.txt)
-          for keyword in $keywords; do
-            if [[ "$ISSUE_TITLE" == *"$keyword"* ]]; then
-              echo "level=$keyword" >> $GITHUB_OUTPUT
-              break
+            if [[ "${{ github.event.issue.title }}" =~ "$keyword" ]]; then
+              echo level=$keyword >> $GITHUB_OUTPUT
             fi
           done
       - name: get output

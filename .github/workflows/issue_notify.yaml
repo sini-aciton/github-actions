@@ -5,6 +5,8 @@ on:
 jobs:
   get-keyword:
     runs-on: ubuntu-latest
+    outputs:
+      level: ${{ steps.get-keyword.outputs.level }}
     steps:
       - name: checkout
         uses: actions/checkout@v4

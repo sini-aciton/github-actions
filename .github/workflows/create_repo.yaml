@@ -23,4 +23,4 @@ jobs:
           echo ${{ secrets.PERSONAL_ACCESS_TOKEN }} | gh auth login --with-token
       - name: create-repo
         run: |
-          gh repo create sini-action/${{ inputs.prefix }}-${{ inputs.name }} --public --add-readme
+          gh repo create sini-aciton/${{ inputs.prefix }}-${{ inputs.name }} --public --add-readme

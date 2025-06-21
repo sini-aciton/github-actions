@@ -5,9 +5,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: startswith
-        if: startWith('github actions', 'git')
+        if: startsWith('github actions', 'git')
         run: echo "git"
-      - name: startswith
+      - name: startsswith
         if: startWith('github actions', 'test')
         run: echo "test"
       - name: endswith

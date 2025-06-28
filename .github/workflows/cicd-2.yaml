@@ -58,7 +58,7 @@ jobs:
       contents: read
     strategy:
       matrix:
-        environment: ["${{ steps.set-env.outputs.environment }}"]
+        environment: ["${{ needs.set-environment.outputs.environments }}"]
     environment: ${{ matrix.environment }}
     steps:
       - name: checkout
@@ -87,7 +87,7 @@ jobs:
       contents: read
     strategy:
       matrix:
-        environment: [ "${{ steps.set-env.outputs.environment }}" ]
+        environment: ["${{ needs.set-environment.outputs.environments }}"]
     environment: ${{ matrix.environment }}
     steps:
       - name: checkout
@@ -140,7 +140,7 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
   create-pr:
-    if: needs.set-environment.outputs.environment == 'dev'
+    if: needs.set-environment.outputs.environments == 'dev'
     runs-on: ubuntu-latest
     needs: [set-environment, deploy]
     steps:

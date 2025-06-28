@@ -37,10 +37,10 @@ jobs:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     outputs:
-      environment: ${{ steps.set-env.outputs.environment }}
+      environment: ${{ steps.set_env.outputs.environment }}
     steps:
-      - name: set env
-        id: set-env
+      - name: set-env
+        id: set_env
         run: |
           echo ${{ github.base_ref }}
           echo "environment=dev" >> $GITHUB_OUTPUT
@@ -49,7 +49,7 @@ jobs:
             echo "environment=prod" >> $GITHUB_OUTPUT 
           fi
       - name: check env
-        run: echo ${{ steps.set-env.outputs.environment }}
+        run: echo ${{ steps.set_env.outputs.environment }}
 
   image-build:
     runs-on: ubuntu-latest

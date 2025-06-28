@@ -15,7 +15,8 @@ function App() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Learn AWS test
+          Learn AWS ci-cd
+
         </a>
       </header>
     </div>

@@ -1,16 +1,17 @@
 name: cicd-2
 on:
   pull_request:
-    types: [opened,synchronize,closed]
-    branches: [dev,master]
+    types: [opened, synchronize, closed]
+    branches: [dev, master]
     paths:
       - 'my-app/**'
+
 jobs:
   test:
     if: github.event.action == 'opened' || github.event.action == 'synchronize'
     runs-on: ubuntu-latest
     steps:
-      - name: checkout
+      - name: checkout the code
         uses: actions/checkout@v4
 #      - name: setup-node
 #        uses: actions/setup-node@v3
@@ -19,7 +20,7 @@ jobs:
 #      - name: Cache Node.js modules
 #        uses: actions/cache@v3
 #        with:
-#          path: ~/.nmp
+#          path: ~/.npm
 #          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
 #          restore-keys: |
 #            ${{ runner.os }}-node-
@@ -36,20 +37,19 @@ jobs:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     outputs:
-      environments: ${{ steps.set-env.outputs.environment }}
+      environment: ${{ steps.set-env.outputs.environment }}
     steps:
-      - name: set-env
+      - name: set env
         id: set-env
         run: |
           echo ${{ github.base_ref }}
           echo "environment=dev" >> $GITHUB_OUTPUT
           
           if [[ ${{ github.base_ref }} == "master" ]]; then
-            echo "environment=prod" >> $GITHUB_OUTPUT
+            echo "environment=prod" >> $GITHUB_OUTPUT 
           fi
       - name: check env
-        run : echo ${{ steps.set-env.outputs.environment }}
-
+        run: echo ${{ steps.set-env.outputs.environment }}
 
   image-build:
     runs-on: ubuntu-latest
@@ -59,10 +59,10 @@ jobs:
       contents: read
     strategy:
       matrix:
-        environment: ["${{ needs.set-environment.outputs.environments }}"]
+        environment: ["${{ needs.set-environment.outputs.environment }}"]
     environment: ${{ matrix.environment }}
     steps:
-      - name: checkout
+      - name: checkout the code
         uses: actions/checkout@v4
 #      - name: Configure AWS Credentials
 #        id: credentials
@@ -82,16 +82,16 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    needs: [set-environment,image-build]
+    needs: [ set-environment, image-build ]
     permissions:
       id-token: write
       contents: read
     strategy:
       matrix:
-        environment: ["${{ needs.set-environment.outputs.environments }}"]
+        environment: ["${{ needs.set-environment.outputs.environment }}"]
     environment: ${{ matrix.environment }}
     steps:
-      - name: checkout
+      - name: checkout the code
         uses: actions/checkout@v4
 #      - name: Configure AWS Credentials
 #        id: credentials
@@ -113,23 +113,22 @@ jobs:
 #      - name: deploy
 #        id: status
 #        run: |
-#          helm upgrade --install my0app kubernetes/my-app --create-namespace --namespace my-app-${{ vars.SUFFIX }} \
+#          helm upgrade --install my-app kubernetes/my-app --create-namespace --namespace my-app-${{ vars.SUFFIX }} \
 #          --set image.tag=${{ github.sha }} \
-#          --set image.repository=${{secrets.REGISTRY }}/${{vars.REPOSITORY}}
-
+#          --set image.repository=${{ secrets.REGISTRY }}/${{ vars.REPOSITORY }}
       - name: notify
         if: always()
         uses: slackapi/slack-github-action@v1.24.0
         with:
           payload: |
             {
-              "text": "Deployment Notification",
+              "text": "message",
               "blocks": [
                 {
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "*Environment:* ${{ needs.set-environment.outputs.environments }}\n*Result:* Deployment completed"
+                    "text": "Environment : ${{ matrix.environment }}, Deploy Result : ${{ steps.status.outcome }}, Repository : ${{ github.repository }}."
                   }
                 }
               ]
@@ -137,8 +136,9 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+
   create-pr:
-    if: needs.set-environment.outputs.environments == 'dev'
+    if: needs.set-environment.outputs.environment == 'dev'
     runs-on: ubuntu-latest
     needs: [set-environment, deploy]
     steps:
@@ -153,8 +153,4 @@ jobs:
           git push origin release/${{ github.run_id }}
       - name: create pr
         run: |
-          gh pr create 
-          --base master 
-          --head release/${{ github.run_id }} 
-          --title "release/${{ github.run_id }} -> master"
-          -- body "release pr"
+          gh pr create --base master --head release/${{ github.run_id }} --title "release/${{ github.run_id }} -> master" --body "release pr"

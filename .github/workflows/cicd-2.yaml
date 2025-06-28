@@ -123,19 +123,16 @@ jobs:
         with:
           payload: |
             {
-              {
-                "text": "message",
-                "color": "28a745",
-                "blocks": [
-                  {
-                    "type": "section:,
-                    "text": {
-                      "type": "mrkdwn",
-                      "text": "Environment : ${{ needs.set-environment.outputs.environment }}, Deploy Result
-                    }
+              "text": "Deployment Notification",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Environment:* ${{ needs.set-environment.outputs.environments }}\n*Result:* Deployment completed"
                   }
-                ]
-              }
+                }
+              ]
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

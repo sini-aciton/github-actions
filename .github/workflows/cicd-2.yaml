@@ -147,12 +147,14 @@ jobs:
       - name: gh auth login
         run: |
           echo ${{ secrets.PERSONAL_ACCESS_TOKEN }} | gh auth login --with-token
-          steps:
       - name: create branch
         run: |
           git checkout -b release/${{ github.run_id }}
           git push origin release/${{ github.run_id }}
-          steps:
       - name: create pr
         run: |
-          gh pr create --base master --head release/${{ github.run_id }} --title "release/${{ github.run_id }} -> master: -- body "release pr"
+          gh pr create 
+          --base master 
+          --head release/${{ github.run_id }} 
+          --title "release/${{ github.run_id }} -> master"
+          -- body "release pr"

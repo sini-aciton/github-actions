@@ -42,12 +42,12 @@ jobs:
       - name: set-env
         id: set_env
         run: |
-          echo ${{ github.base_ref }}
           echo "environment=dev" >> $GITHUB_OUTPUT
-          
-          if [[ ${{ github.base_ref }} == "master" ]]; then
-            echo "environment=prod" >> $GITHUB_OUTPUT 
+
+          if [[ "$GITHUB_BASE_REF" == "master" ]]; then
+            echo "environment=prod" >> $GITHUB_OUTPUT
           fi
+
       - name: check env
         run: echo ${{ steps.set_env.outputs.environment }}
 

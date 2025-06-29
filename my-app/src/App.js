@@ -15,7 +15,7 @@ function App() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Learn cicd4
+          Learn cicd6
         </a>
       </header>
     </div>
